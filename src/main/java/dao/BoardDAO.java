@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -82,8 +83,10 @@ public class BoardDAO {
 //	
 //	
 //	// 총 데이터 갯수 구하기
-	public int getCount() {
+	public int getCount() throws Exception{
 		int result = 0;
+		SqlSession session = getSession();
+		result = (Integer)session.selectOne("board_count");
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
 //		ResultSet rs = null;
@@ -110,8 +113,13 @@ public class BoardDAO {
 	}
 //	
 //	// 글목록
-	public List<BoardBean> getList(int start, int end){
+//	public List<BoardBean> getList(int start, int end) {
+//	public List<BoardBean> getList(int page) throws Exception {
+	public List<BoardBean> getList(Map map) throws Exception {
 		List<BoardBean> list = new ArrayList<BoardBean>();
+		SqlSession session = getSession();
+//		list = session.selectList("board_list", page);
+		list = session.selectList("board_list", map);
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
 //		ResultSet rs = null;
@@ -159,7 +167,9 @@ public class BoardDAO {
 //	
 //	
 //	// 조회수 증가
-	public void readcountUpdate(int board_num) {
+	public void readcountUpdate(int board_num) throws Exception{
+		SqlSession session = getSession();
+		session.update("board_updatecount", board_num);
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
 //		
@@ -186,6 +196,9 @@ public class BoardDAO {
 //	// 상세 페이지 
 	public BoardBean getDetail(int board_num) {
 		BoardBean board = new BoardBean();
+		
+		SqlSession session = getSession();
+		board = (BoardBean)session.selectOne("board_content",board_num);
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
 //		ResultSet rs = null;
@@ -222,11 +235,18 @@ public class BoardDAO {
 //		
 		return board;
 	}
-//	
-//	
+	// 댓글 출력 순서
+	public void updateSeq(BoardBean board) throws Exception{
+		SqlSession session = getSession();
+		session.update("board_updateseq", board);
+	}
+	
+	
 //	// 댓글 작성
-	public int boardReply(BoardBean board) {
+	public int boardReply(BoardBean board) throws Exception {
 		int result = 0;
+		SqlSession session = getSession();
+		result = session.insert("board_reply", board);
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
 //		

@@ -4,11 +4,53 @@
 
 <mapper namespace="boardns">
 	<insert id="board_insert" parameterType="board">
-		insert into model2 values(model2_seq.nextval,#{board_name},
-		#{board_pass}, #{board_subject}, #{board_content}, #{board_file}, 
+		insert into model2 values(model2_seq.nextval, #{board_name},
+		#{board_pass}, #{board_subject}, #{board_content}, 
+		#{board_file, jdbcType=VARCHAR}, 
 		model2_seq.nextval , 0, 0, 0, sysdate)
 	</insert>
 
+	<!-- 글작성(원문) -->
+	<select id="board_count" resultType="int">
+		select count(*) from model2
+	</select>
+	
+	<!-- 글 목록 -->
+<!-- 	<select id="board_list" parameterType="int" resultType="board">
+		select * from (select rownum rnum, board.* from (
+		select * from model2 order by board_re_ref desc, board_re_seq asc) board )
+		where rnum &gt;= (#{page}-1) 10 + 1 and rnum &lt;= #{page} * 10
+	</select> -->
+
+	<select id="board_list" parameterType="java.util.Map" resultType="board">
+		select * from (select rownum rnum, board.* from (
+		select * from model2 order by board_re_ref desc, board_re_seq asc) board )
+		where rnum &gt;= #{start} and rnum &lt;= #{end}
+	</select>
+	
+	<!-- 조회수 증가 -->
+	<update id="board_updatecount" parameterType="int">
+		update model2 set board_readcount = board_readcount+1 
+		where board_num = #{board_num}
+	</update>
+	
+	<!-- 상세 페이지 -->
+	<select id="board_content" parameterType="int" resultType="board">
+		select * from model2 where board_num = #{board_num}
+	</select>
+	
+	<!-- 댓글 출력 순서 -->
+	<update id="board_updateseq" parameterType="board">
+		update model2 set board_re_seq = board_re_seq+1 
+		where board_re_ref=#{board_re_ref} and board_re_seq &gt; #{board_re_seq}
+	</update>
+	
+	<!-- 댓글 작성 -->
+	<insert id="board_reply" parameterType="board">
+		insert into model2 values(model2_seq.nextval, #{board_name}, #{board_pass},
+		#{board_subject}, #{board_content}, #{board_file, jdbcType=VARCHAR},
+		#{board_re_ref}, #{board_re_lev}, #{board_re_seq}, 0, sysdate)
+	</insert>
 	<!-- <select id="getSomething" parameterType="int" resultType="#package.#modelname">
 		SELECT
 		columnname1,

@@ -1,6 +1,8 @@
 package service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +31,19 @@ public class BoardListAction implements Action{
 		int listcount = dao.getCount();		// 총 데이터 갯수
 		System.out.println("listcount:"+listcount);
 		
-		List<BoardBean> boardlist = dao.getList(startRow, endRow);
+//		List<BoardBean> boardlist = dao.getList(startRow, endRow);
+//		List<BoardBean> boardlist = dao.getList(page);
+		
+//		----------Map 처리 ------------
+		Map map = new HashMap();
+		map.put("start", startRow);
+		map.put("end", endRow);
+		List<BoardBean> boardlist = dao.getList(map);
+//		-----------------------------
+		
+		
+		
+		
 		System.out.println("boardlist:"+boardlist);
 		
 		// 총 페이지수
