@@ -294,6 +294,8 @@ public class BoardDAO {
 //	// 글 수정
 	public int update(BoardBean board) {
 		int result = 0;
+		SqlSession session = getSession();
+		result = session.update("baord_update",board);
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
 //		
@@ -320,6 +322,8 @@ public class BoardDAO {
 //	// 글 삭제
 	public int delete(int board_num) {
 		int result = 0;
+		SqlSession session = getSession();
+		result = session.delete("board_delete",board_num);
 //		Connection con = null;
 //		PreparedStatement pstmt = null;
 //		

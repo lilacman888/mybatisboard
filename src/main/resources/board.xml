@@ -51,6 +51,17 @@
 		#{board_subject}, #{board_content}, #{board_file, jdbcType=VARCHAR},
 		#{board_re_ref}, #{board_re_lev}, #{board_re_seq}, 0, sysdate)
 	</insert>
+	
+	<!-- 글 수정 -->
+	<update id="board_update" parameterType="board">
+		update model2 set board_name=#{board_name}, board_subject=#{board_subject},
+		board_content=#{board_content}, where board_num = #{board_num}
+	</update>
+	
+		<!-- 글삭제 -->
+	<delete id="board_delete" parameterType="int">
+	  delete from model2 where board_num = #{board_num}
+	</delete>
 	<!-- <select id="getSomething" parameterType="int" resultType="#package.#modelname">
 		SELECT
 		columnname1,
